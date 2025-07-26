@@ -5,7 +5,11 @@ const cors = require('cors');
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://yourfrontend.netlify.app', // replace with your actual Netlify URL
+  credentials: true
+}));
+
 
 // Server port
 const HTTP_PORT = 3333;

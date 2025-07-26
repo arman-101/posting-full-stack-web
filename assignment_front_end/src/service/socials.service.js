@@ -1,110 +1,49 @@
-const getUser = (user_id) => {
-    return fetch("http://localhost:3333/users/" + user_id)
+const API_URL = import.meta.env.VITE_API_URL;
 
-    .then((response) => {
-        if(response.status === 200) {
-            return response.json();
-        }
-        else if (response.status === 404) {
-            throw 'Bad request';
-        }
-        else {
-            throw "Something went wrong"
-        }
-    })
-    .then((resJson) => {
-        return resJson
-    })
-    .catch((error) => {
-        console.log('Err', error)
-        return Promise.reject(error)
-    })
-}
+const getUser = (user_id) => {
+    return fetch(`${API_URL}/users/${user_id}`)
+    .then(response => {
+        if (response.ok) return response.json();
+        if (response.status === 404) throw 'Bad request';
+        throw "Something went wrong";
+    }).catch(error => Promise.reject(error));
+};
 
 const followUser = (user_id) => {
-    return fetch("http://localhost:3333/users/" + user_id + "/follow",
-    {
+    return fetch(`${API_URL}/users/${user_id}/follow`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "X-Authorization": localStorage.getItem("session_token")
         }
-    })
-    .then((response) => {
-        if(response.status === 200) {
-            return "Follow Successful"
-        }
-        else if (response.status === 401) {
-            throw 'Unauthorised'
-        }
-        else if (response.status === 403) {
-            throw 'You are already following this user'
-        }
-        else if (response.status === 404) {
-            throw 'Not Found'
-        }
-        else {
-            throw "Something went wrong"
-        }
-    })
-    .catch((error) => {
-        console.log("Err", error)
-        return Promise.reject(error)
-    })
-}
+    }).then(handleSocialResponse);
+};
 
 const unfollowUser = (user_id) => {
-    return fetch("http://localhost:3333/users/" + user_id + "/follow",
-    {
+    return fetch(`${API_URL}/users/${user_id}/follow`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "X-Authorization": localStorage.getItem("session_token")
         }
-    })
-    .then((response) => {
-        if(response.status === 200) {
-            return "Unfollow Successful"
-        }
-        else if (response.status === 401) {
-            throw 'Unauthorised'
-        }
-        else if (response.status === 403) {
-            throw 'You can not unfollow a user that you are already unfollowing'
-        }
-        else if (response.status === 404) {
-            throw 'Not Found'
-        }
-        else {
-            throw "Something went wrong"
-        }
-    })
-    .catch((error) => {
-        console.log("Err", error)
-        return Promise.reject(error)
-    })
-}
+    }).then(handleSocialResponse);
+};
 
 const searchUser = (query) => {
-    return fetch("http://localhost:3333/search?q=" + query)
+    return fetch(`${API_URL}/search?q=${query}`)
     .then(response => {
-        if(response.status === 200) {
-            return response.json();
-        }
-        else if (response.status === 400) {
-            throw 'Bad request';
-        }
-        else {
-            throw 'Something went wrong'
-        }
-    })
-    .then(rJson => {
-        return rJson
-    })
-    .catch(err => {
-        console.log(err);
-        return Promise.reject(err)
-    })
+        if (response.ok) return response.json();
+        if (response.status === 400) throw 'Bad request';
+        throw 'Something went wrong';
+    }).catch(err => Promise.reject(err));
+};
+
+function handleSocialResponse(response) {
+    if (response.ok) return "Success";
+    if (response.status === 401) throw 'Unauthorised';
+    if (response.status === 403) throw 'Forbidden';
+    if (response.status === 404) throw 'Not Found';
+    throw "Something went wrong";
 }
 
 export const socialService = {
@@ -112,4 +51,4 @@ export const socialService = {
     followUser,
     unfollowUser,
     searchUser
-}
+};
