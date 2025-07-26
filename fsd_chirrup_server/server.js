@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors({
-  origin: 'https://posting-full-stack-web-app.netlify.app/', // replace with your actual Netlify URL
+  origin: 'https://posting-full-stack-web-app.netlify.app', // replace with your actual Netlify URL
   credentials: true
 }));
 
