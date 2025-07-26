@@ -1,0 +1,24 @@
+.main-div {
+    margin: 20px;
+}
+
+.input-error-div {
+    margin-top: 10px;
+}
+
+.user-div {
+    margin-left: -30px;
+}
+
+.post-div {
+    margin-left: -50px;
+    margin-top: 5px;
+}
+
+.profile-div {
+    margin-left: -15px;
+}
+
+.logout-div {
+    margin-top: 5px;
+}
